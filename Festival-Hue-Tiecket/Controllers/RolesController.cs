@@ -10,27 +10,26 @@ namespace Festival_Hue_Tiecket.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HelpsMenuController : ControllerBase
+    public class RolesController : ControllerBase
     {
-        public static List<HelpsMenu> helpsMenus = new List<HelpsMenu>();
+        public static List<Roles> roles = new List<Roles>();
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(helpsMenus);
+            return Ok(roles);
         }
         [HttpPost]
-        public IActionResult Create(HelpsMenu helpsMenu)
+        public IActionResult Create(Roles roles)
         {
-            var helpmenu = new HelpsMenu
+            var Roless = new Roles
             {
-                ID = helpsMenu.ID,
-                Title = helpsMenu.Title,
-                Content = helpsMenu.Content,
+                RolesID = roles.RolesID,
+                Name = roles.Name,
             };
             return Ok(new
             {
                 Success = true,
-                Data = helpsMenu
+                Data = roles
             });
 
         }

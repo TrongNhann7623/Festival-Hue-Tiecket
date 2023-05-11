@@ -10,27 +10,26 @@ namespace Festival_Hue_Tiecket.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class HelpsMenuController : ControllerBase
+    public class TicketTypesController : ControllerBase
     {
-        public static List<HelpsMenu> helpsMenus = new List<HelpsMenu>();
+        public static List<TicketTypes> ticketTypes = new List<TicketTypes>();
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(helpsMenus);
+            return Ok(ticketTypes);
         }
         [HttpPost]
-        public IActionResult Create(HelpsMenu helpsMenu)
+        public IActionResult Create(TicketTypes ticketTypes)
         {
-            var helpmenu = new HelpsMenu
+            var TicketTypess = new TicketTypes
             {
-                ID = helpsMenu.ID,
-                Title = helpsMenu.Title,
-                Content = helpsMenu.Content,
+                TicketTypeID = ticketTypes.TicketTypeID,
+                Name = ticketTypes.Name,
             };
             return Ok(new
             {
                 Success = true,
-                Data = helpsMenu
+                Data = ticketTypes
             });
 
         }
