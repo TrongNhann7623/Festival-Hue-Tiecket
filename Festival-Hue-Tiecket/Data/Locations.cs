@@ -11,6 +11,7 @@ namespace Festival_Hue_Tiecket.Data
     {
         [Key]
         public int LocationID { get; set; }
+        [Required]
         public string Name { get; set; }
         public string Summary { get; set; }
         public string Content { get; set; }

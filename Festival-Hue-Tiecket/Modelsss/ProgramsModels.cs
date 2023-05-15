@@ -1,16 +1,15 @@
-﻿using System;
+﻿using Festival_Hue_Tiecket.Data;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Festival_Hue_Tiecket.Data
+namespace Festival_Hue_Tiecket.Modelsss
 {
-    public class Programs
+    public class ProgramsModels
     {
-        [Key]
-        public int ProgramID { get; set; }
         [Required]
         public int LocationID { get; set; }
         [ForeignKey("LocationID")]

@@ -11,6 +11,7 @@ namespace Festival_Hue_Tiecket.Data
     {
         [Key]
         public int LocationLikedID { get; set; }
+        [Required]
         public int LocationID { get; set; }
         public int UserID { get; set; }
         

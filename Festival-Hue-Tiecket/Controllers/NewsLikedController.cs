@@ -1,4 +1,5 @@
 ﻿using Festival_Hue_Tiecket.Data;
+using Festival_Hue_Tiecket.Modelsss;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,27 +13,83 @@ namespace Festival_Hue_Tiecket.Controllers
     [ApiController]
     public class NewsLikedController : ControllerBase
     {
-        public static List<NewsLiked> newsLikeds = new List<NewsLiked>();
+        private readonly MyDbContext _context;
+        public NewsLikedController(MyDbContext context)
+        {
+            _context = context;
+        }
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(newsLikeds);
+            var newslike = _context.NewsLikeds.ToList();
+            return Ok(newslike);
+        }
+        [HttpGet("{NewsLikedID}")]
+        public IActionResult GetByID(string NewsLikedID)
+        {
+            try
+            {
+                var newslike = _context.NewsLikeds.SingleOrDefault(NL => NL.NewsLikedID == int.Parse(NewsLikedID));
+                if (newslike == null)
+                {
+                    return NotFound();
+                }
+                return Ok(newslike);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpPost]
-        public IActionResult Create(NewsLiked newsLiked)
+        public IActionResult CreateNew(NewsLikeModels model)
         {
-            var NewsLikedd = new NewsLiked
+            try
             {
-                NewsLikedID = newsLiked.NewsLikedID,
-                UserID = newsLiked.UserID,
-                NewsID = newsLiked.NewsID,
-            };
-            return Ok(new
+                var newslike = new NewsLiked
+                {
+                    NewsID = model.NewsID,
+                    UserID = model.UserID,
+                };
+                _context.Add(newslike);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch
             {
-                Success = true,
-                Data = newsLiked
-            });
+                return BadRequest();
+            }
+        }
 
+        [HttpPut("{NewsLikedID}")]
+        public IActionResult UpdateLocationLikeByID(int NewsLikedID, NewsLikeModels model)
+        {
+            var newsLiked  = _context.NewsLikeds.SingleOrDefault(NL => NL.NewsLikedID == NewsLikedID);
+            if (newsLiked != null)
+            {
+                newsLiked.NewsID = model.NewsID;
+                newsLiked.UserID = model.UserID;
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        [HttpDelete("{NewsLikedID}")]
+        public async Task<IActionResult> DeleteHelpsmenuByID(int NewsLikedID)
+        {
+            var newsLiked = await _context.NewsLikeds.FindAsync(NewsLikedID);
+            if (newsLiked != null)
+            {
+                _context.NewsLikeds.Remove(newsLiked);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

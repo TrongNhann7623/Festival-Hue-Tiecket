@@ -4,14 +4,12 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Festival_Hue_Tiecket.Data
+namespace Festival_Hue_Tiecket.Modelsss
 {
-    public class Roles
+    public class HelpsMenuModels
     {
-        [Key]
-        public int RolesID { get; set; }
         [Required]
-        public String Name { get; set; }
-        
+        public string Title { get; set; }
+        public string Content { get; set; }
     }
 }
