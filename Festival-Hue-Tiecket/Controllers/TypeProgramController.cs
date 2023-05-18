@@ -1,4 +1,5 @@
 ﻿using Festival_Hue_Tiecket.Data;
+using Festival_Hue_Tiecket.Modelsss;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,26 +13,82 @@ namespace Festival_Hue_Tiecket.Controllers
     [ApiController]
     public class TypeProgramController : ControllerBase
     {
-        public static List<TypeProgram> typePrograms = new List<TypeProgram>();
+        private readonly MyDbContext _context;
+        public TypeProgramController(MyDbContext context)
+        {
+            _context = context;
+        }
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(typePrograms);
+            var typeprogram = _context.typePrograms.ToList();
+            return Ok(typeprogram);
+        }
+        [HttpGet("{TypeProgramID}")]
+        public IActionResult GetByID(string TypeProgramID)
+        {
+            try
+            {
+                var typeprogram = _context.typePrograms.SingleOrDefault(TP => TP.TypeProgramID == int.Parse(TypeProgramID));
+                if (typeprogram == null)
+                {
+                    return NotFound();
+                }
+                return Ok(typeprogram);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpPost]
-        public IActionResult Create(TypeProgram typeProgram)
+        public IActionResult CreateNew(TypesProgramModels model)
         {
-            var TypeProgramm = new TypeProgram
+            try
             {
-                TypeProgramID = typeProgram.TypeProgramID,
-                Name = typeProgram.Name,
-            };
-            return Ok(new
-            {
-                Success = true,
-                Data = typeProgram
-            });
+                var typeprogram = new TypeProgram
+                {
+                    Name = model.Name,
 
+                };
+                _context.Add(typeprogram);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
+
+        [HttpPut("{TypeProgramID}")]
+        public IActionResult UpdateTicketTypeID(int TypeProgramID, TypesProgramModels model)
+        {
+            var typeprogram = _context.typePrograms.SingleOrDefault(TP => TP.TypeProgramID == TypeProgramID);
+            if (typeprogram != null)
+            {
+                typeprogram.Name = model.Name;
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        [HttpDelete("{TypeProgramID}")]
+        public async Task<IActionResult> DeleteRolesByID(int TypeProgramID)
+        {
+            var typeprogram = await _context.typePrograms.FindAsync(TypeProgramID);
+            if (typeprogram != null)
+            {
+                _context.typePrograms.Remove(typeprogram);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

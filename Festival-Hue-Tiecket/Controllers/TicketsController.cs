@@ -1,4 +1,5 @@
 ﻿using Festival_Hue_Tiecket.Data;
+using Festival_Hue_Tiecket.Modelsss;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -12,31 +13,91 @@ namespace Festival_Hue_Tiecket.Controllers
     [ApiController]
     public class TicketsController : ControllerBase
     {
-        public static List<Tickets> tickets = new List<Tickets>();
+        private readonly MyDbContext _context;
+        public TicketsController(MyDbContext context)
+        {
+            _context = context;
+        }
         [HttpGet]
         public IActionResult GetAll()
         {
-            return Ok(tickets);
+            var ticket = _context.tickets.ToList();
+            return Ok(ticket);
+        }
+        [HttpGet("{TicketID}")]
+        public IActionResult GetByID(int TicketID)
+        {
+            try
+            {
+                var ticket = _context.tickets.SingleOrDefault(TK => TK.TicketID == TicketID);
+                if (ticket == null)
+                {
+                    return NotFound();
+                }
+                return Ok(ticket);
+            }
+            catch
+            {
+                return BadRequest();
+            }
         }
         [HttpPost]
-        public IActionResult Create(Tickets tickets)
+        public IActionResult CreateNew(TicketModels model)
         {
-            var Ticketss = new Tickets
+            try
             {
-                TicketID = tickets.TicketID,
-                Price = tickets.Price,
-                Code = tickets.Code,
-                Status = tickets.Status,
-                UserID = tickets.UserID,
-                TicketTypeID = tickets.TicketTypeID,
-
-            };
-            return Ok(new
+                var ticket = new Tickets
+                {
+                    Price = model.Price,
+                    Code = model.Code,
+                    Status = model.Status,
+                    UserID = model.UserID,
+                    TicketTypeID = model.TicketTypeID,
+                   
+                };
+                _context.Add(ticket);
+                _context.SaveChanges();
+                return Ok();
+            }
+            catch
             {
-                Success = true,
-                Data = tickets
-            });
+                return BadRequest();
+            }
+        }
 
+        [HttpPut("{TicketID}")]
+        public IActionResult UpdateRolesByID(int TicketID, Tickets model)
+        {
+            var ticket = _context.tickets.SingleOrDefault(TK => TK.TicketID == TicketID);
+            if (ticket != null)
+            {
+                ticket.Price = model.Price;
+                ticket.Code = model.Code;
+                ticket.Status = model.Status;
+                ticket.UserID = model.UserID;
+                ticket.TicketTypeID = model.TicketTypeID;
+               
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        [HttpDelete("{TicketID}")]
+        public async Task<IActionResult> DeleteTicketID(int TicketID)
+        {
+            var ticket = await _context.tickets.FindAsync(TicketID);
+            if (ticket != null)
+            {
+                _context.tickets.Remove(ticket);
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            else
+            {
+                return NotFound();
+            }
         }
     }
 }

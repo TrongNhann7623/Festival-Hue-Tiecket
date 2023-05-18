@@ -1,22 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Festival_Hue_Tiecket.Data
+namespace Festival_Hue_Tiecket.Modelsss
 {
-    public class TicketCheckin
+    public class TicketCheckinModels
     {
-        [Key]
-        public int TicketCheckinID { get; set; }
         [Required]
         public DateTime CreateTime { get; set; }
         public bool Status { get; set; }
         public int TicketID { get; set; }
         public int UserID { get; set; }
-        
-
     }
 }
