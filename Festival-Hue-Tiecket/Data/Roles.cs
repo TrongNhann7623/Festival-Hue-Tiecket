@@ -10,7 +10,6 @@ namespace Festival_Hue_Tiecket.Data
     {
         [Key]
         public int RolesID { get; set; }
-        [Required]
         public String Name { get; set; }
         
     }

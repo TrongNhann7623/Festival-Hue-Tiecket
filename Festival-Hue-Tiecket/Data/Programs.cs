@@ -11,10 +11,9 @@ namespace Festival_Hue_Tiecket.Data
     {
         [Key]
         public int ProgramID { get; set; }
-        [Required]
+
         public int LocationID { get; set; }
-        [ForeignKey("LocationID")]
-        public Locations Locations { get; set; }
+        public virtual Locations Locations { get; set; }
         public string Name { get; set; }
         public string Content { get; set; }
         public string PathImage { get; set; }
@@ -24,7 +23,6 @@ namespace Festival_Hue_Tiecket.Data
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public int TypeProgramID { get; set; }
-        [ForeignKey("TypeProgramID")]
-        public TypeProgram TypeProgram { get; set; }
+        public virtual TypeProgram TypePrograms { get; set; }
     }
 }

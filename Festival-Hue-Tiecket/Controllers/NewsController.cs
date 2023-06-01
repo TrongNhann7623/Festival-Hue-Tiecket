@@ -21,7 +21,7 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var news = _context.news.ToList();
+            var news = _context.News.ToList();
             return Ok(news);
         }
         [HttpGet("{NewsID}")]
@@ -29,7 +29,7 @@ namespace Festival_Hue_Tiecket.Controllers
         {
             try
             {
-                var news = _context.news.SingleOrDefault(NN => NN.NewsID == int.Parse(NewsID));
+                var news = _context.News.SingleOrDefault(NN => NN.NewsID == int.Parse(NewsID));
                 if (news == null)
                 {
                     return NotFound();
@@ -68,7 +68,7 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpPut("{NewsID}")]
         public IActionResult UpdateNewsID(int NewsID, NewsModels model)
         {
-            var news = _context.news.SingleOrDefault(NN => NN.NewsID == NewsID);
+            var news = _context.News.SingleOrDefault(NN => NN.NewsID == NewsID);
             if (news != null)
             {
                 news.Name = model.Name;
@@ -87,10 +87,10 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpDelete("{NewsID}")]
         public async Task<IActionResult> DeleteLocationID(int NewsID)
         {
-            var newss = await _context.news.FindAsync(NewsID);
+            var newss = await _context.News.FindAsync(NewsID);
             if (newss != null)
             {
-                _context.news.Remove(newss);
+                _context.News.Remove(newss);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

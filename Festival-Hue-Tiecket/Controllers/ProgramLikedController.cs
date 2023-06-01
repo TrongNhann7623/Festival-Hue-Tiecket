@@ -21,7 +21,7 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var programLikedss = _context.programLikeds.ToList();
+            var programLikedss = _context.ProgramLikeds.ToList();
             return Ok(programLikedss);
         }
         [HttpGet("{ProgramLikeID}")]
@@ -29,7 +29,7 @@ namespace Festival_Hue_Tiecket.Controllers
         {
             try
             {
-                var programliked = _context.programLikeds.SingleOrDefault(PGL => PGL.ProgramLikeID ==ProgramLikeID);
+                var programliked = _context.ProgramLikeds.SingleOrDefault(PGL => PGL.ProgramLikeID ==ProgramLikeID);
                 if (programliked == null)
                 {
                     return NotFound();
@@ -64,7 +64,7 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpPut("{ProgramLikeID}")]
         public IActionResult UpdateLocationLikeByID(int ProgramLikeID, ProgramLikedModels model)
         {
-            var programLiked = _context.programLikeds.SingleOrDefault(PGL => PGL.ProgramLikeID == ProgramLikeID);
+            var programLiked = _context.ProgramLikeds.SingleOrDefault(PGL => PGL.ProgramLikeID == ProgramLikeID);
             if (programLiked != null)
             {
                 programLiked.ProgramID = model.ProgramID;
@@ -79,10 +79,10 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpDelete("{ProgramLikeID}")]
         public async Task<IActionResult> DeleteProgramLikedByID(int ProgramLikeID)
         {
-            var programliked = await _context.programLikeds.FindAsync(ProgramLikeID);
+            var programliked = await _context.ProgramLikeds.FindAsync(ProgramLikeID);
             if (programliked != null)
             {
-                _context.programLikeds.Remove(programliked);
+                _context.ProgramLikeds.Remove(programliked);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

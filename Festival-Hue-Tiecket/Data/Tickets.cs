@@ -11,17 +11,13 @@ namespace Festival_Hue_Tiecket.Data
     {
         [Key]
         public int TicketID { get; set; }
-        [Required]
         public int Price { get; set; }
         public string Code { get; set; }
         public bool Status { get; set; }
         public int UserID { get; set; }
-        [ForeignKey("UserID")]
-        public Users Users { get; set; }
-        public int TicketTypeID { get; set; }
-        [ForeignKey("TicketTypeID")]
-        public TicketTypes TicketTypes { get; set; }
-
-
+        public virtual Users Userss { get; set; }
+        public int TicketTypeId { get; set; }
+        public virtual TicketTypes TicketTypess { get; set; }
+        public object CreatedDate { get; internal set; }
     }
 }

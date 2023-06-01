@@ -15,6 +15,8 @@ namespace Festival_Hue_Tiecket.Modelsss
         public string Password { get; set; }
         public string Email { get; set; }
         public int SDT { get; set; }
-        public Roles Roles { get; set; }
+        public virtual ICollection<Roles> Roless { get; set; }
+        public string PasswordResetToken { get; set; }
+        public DateTime ResetTokenExpires { get; set; }
     }
 }

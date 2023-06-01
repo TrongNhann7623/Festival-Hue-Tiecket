@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -8,7 +9,8 @@ namespace Festival_Hue_Tiecket.Modelsss
 {
     public class RolesModels
     {
-        [Required]
-        public string Name { get; set; }
+        [Key]
+        public int RolesID { get; set; }
+        public String Name { get; set; }
     }
 }

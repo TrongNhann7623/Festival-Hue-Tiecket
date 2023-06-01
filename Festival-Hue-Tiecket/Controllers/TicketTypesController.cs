@@ -2,6 +2,7 @@
 using Festival_Hue_Tiecket.Modelsss;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,77 +19,93 @@ namespace Festival_Hue_Tiecket.Controllers
         {
             _context = context;
         }
+
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<ActionResult<IEnumerable<TicketTypes>>> GetTicketstype()
         {
-            var ticketType = _context.ticketTypes.ToList();
-            return Ok(ticketType);
+            if (_context.Tickets == null)
+            {
+                return NotFound();
+            }
+            return await _context.TicketTypes.ToListAsync();
         }
-        [HttpGet("{TicketTypeID}")]
-        public IActionResult GetByID(string TicketTypeID)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TicketTypes>> GetTicketType(int id)
         {
+            if (_context.TicketTypes == null)
+            {
+                return NotFound();
+            }
+            var ticketType = await _context.TicketTypes.FindAsync(id);
+
+            if (ticketType == null)
+            {
+                return NotFound();
+            }
+
+            return ticketType;
+        }
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTicketType(int id, TicketTypes ticketType)
+        {
+            if (id != ticketType.TicketTypeID)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(ticketType).State = EntityState.Modified;
+
             try
             {
-                var ticketType = _context.ticketTypes.SingleOrDefault(TKT => TKT.TicketTypeID == int.Parse(TicketTypeID));
-                if (ticketType == null)
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TicketTypeExists(id))
                 {
                     return NotFound();
                 }
-                return Ok(ticketType);
+                else
+                {
+                    throw;
+                }
             }
-            catch
-            {
-                return BadRequest();
-            }
+
+            return NoContent();
         }
         [HttpPost]
-        public IActionResult CreateNew(TicketTypesModels model)
+        public async Task<ActionResult<TicketTypes>> PostTicketType(TicketTypes ticketType)
         {
-            try
+            if (_context.TicketTypes == null)
             {
-                var ticketType = new TicketTypes
-                {
-                    Name = model.Name,
+                return Problem("Entity set 'DataContext.TicketTypes'  is null.");
+            }
+            _context.TicketTypes.Add(ticketType);
+            await _context.SaveChangesAsync();
 
-                };
-                _context.Add(ticketType);
-                _context.SaveChanges();
-                return Ok();
-            }
-            catch
-            {
-                return BadRequest();
-            }
+            return CreatedAtAction("GetTicketType", new { id = ticketType.TicketTypeID }, ticketType);
         }
-
-        [HttpPut("{TicketTypeID}")]
-        public IActionResult UpdateTicketTypeID(int TicketTypeID, TicketTypesModels model)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTicketType(int id)
         {
-            var ticketType = _context.ticketTypes.SingleOrDefault(TKT => TKT.TicketTypeID == TicketTypeID);
-            if (ticketType != null)
-            {
-                ticketType.Name = model.Name;
-                return NoContent();
-            }
-            else
+            if (_context.TicketTypes == null)
             {
                 return NotFound();
             }
-        }
-        [HttpDelete("{TicketTypeID}")]
-        public async Task<IActionResult> DeleteRolesByID(int TicketTypeID)
-        {
-            var ticketType = await _context.ticketTypes.FindAsync(TicketTypeID);
-            if (ticketType != null)
-            {
-                _context.ticketTypes.Remove(ticketType);
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            else
+            var ticketType = await _context.TicketTypes.FindAsync(id);
+            if (ticketType == null)
             {
                 return NotFound();
             }
+
+            _context.TicketTypes.Remove(ticketType);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+        private bool TicketTypeExists(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

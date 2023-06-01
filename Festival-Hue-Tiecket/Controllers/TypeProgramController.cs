@@ -21,7 +21,7 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var typeprogram = _context.typePrograms.ToList();
+            var typeprogram = _context.TypePrograms.ToList();
             return Ok(typeprogram);
         }
         [HttpGet("{TypeProgramID}")]
@@ -29,7 +29,7 @@ namespace Festival_Hue_Tiecket.Controllers
         {
             try
             {
-                var typeprogram = _context.typePrograms.SingleOrDefault(TP => TP.TypeProgramID == int.Parse(TypeProgramID));
+                var typeprogram = _context.TypePrograms.SingleOrDefault(TP => TP.TypeProgramID == int.Parse(TypeProgramID));
                 if (typeprogram == null)
                 {
                     return NotFound();
@@ -64,7 +64,7 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpPut("{TypeProgramID}")]
         public IActionResult UpdateTicketTypeID(int TypeProgramID, TypesProgramModels model)
         {
-            var typeprogram = _context.typePrograms.SingleOrDefault(TP => TP.TypeProgramID == TypeProgramID);
+            var typeprogram = _context.TypePrograms.SingleOrDefault(TP => TP.TypeProgramID == TypeProgramID);
             if (typeprogram != null)
             {
                 typeprogram.Name = model.Name;
@@ -78,10 +78,10 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpDelete("{TypeProgramID}")]
         public async Task<IActionResult> DeleteRolesByID(int TypeProgramID)
         {
-            var typeprogram = await _context.typePrograms.FindAsync(TypeProgramID);
+            var typeprogram = await _context.TypePrograms.FindAsync(TypeProgramID);
             if (typeprogram != null)
             {
-                _context.typePrograms.Remove(typeprogram);
+                _context.TypePrograms.Remove(typeprogram);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

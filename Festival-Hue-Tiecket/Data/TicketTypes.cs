@@ -10,7 +10,6 @@ namespace Festival_Hue_Tiecket.Data
     {
         [Key]
         public int TicketTypeID { get; set; }
-        [Required]
         public string Name { get; set; }
     }
 }

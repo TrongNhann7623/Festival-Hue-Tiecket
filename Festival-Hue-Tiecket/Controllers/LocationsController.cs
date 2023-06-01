@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
 
 namespace Festival_Hue_Tiecket.Controllers
@@ -19,87 +20,91 @@ namespace Festival_Hue_Tiecket.Controllers
             _context = context;
         }
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<ActionResult<IEnumerable<Locations>>> GetLocations()
         {
-            var locations = _context.locationss.ToList();
-            return Ok(locations);
+            if (_context.Locationss == null)
+            {
+                return NotFound();
+            }
+            return await _context.Locationss.ToListAsync();
         }
         [HttpGet("{LocationID}")]
-        public IActionResult GetByLocationID(string LocationID)
+        public async Task<ActionResult<Locations>> GetLocation(int LocationID)
         {
+            if (_context.Locationss == null)
+            {
+                return NotFound();
+            }
+            var location = await _context.Locationss.FindAsync(LocationID);
+
+            if (location == null)
+            {
+                return NotFound();
+            }
+
+            return location;
+        }
+        [HttpPut("{LocationID}")]
+        public async Task<IActionResult> PutLocation(int id, Locations location)
+        {
+            if (id != location.LocationID)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(location).State = EntityState.Modified;
+
             try
             {
-                var locations = _context.locationss.SingleOrDefault(LC => LC.LocationID == int.Parse(LocationID));
-                if (locations == null)
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!LocationExists(id))
                 {
                     return NotFound();
                 }
-                return Ok(locations);
+                else
+                {
+                    throw;
+                }
             }
-            catch
-            {
-                return BadRequest();
-            }
+
+            return NoContent();
         }
         [HttpPost]
-        public IActionResult CreateNew(LocationsModels model)
+        public async Task<ActionResult<Locations>> PostLocation(Locations location)
         {
-            try
+            if (_context.Locationss == null)
             {
-                var locations = new Locations
-                {
-                    Name = model.Name,
-                    Summary = model.Summary,
-                    Content = model.Content,
-                    PathImage = model.PathImage,
-                    Longtitude = model.Longtitude,
-                    Latitude = model.Latitude,
-                    LocationLikedID = model.LocationLikedID,
-                };
-                _context.Add(locations);
-                _context.SaveChanges();
-                return Ok();
+                return Problem("Entity set 'DataContext.Locations'  is null.");
             }
-            catch
-            {
-                return BadRequest();
-            }
-        }
+            _context.Locationss.Add(location);
+            await _context.SaveChangesAsync();
 
-        [HttpPut("{LocationID}")]
-        public IActionResult UpdateLocationByID(int LocationID, LocationsModels model)
+            return CreatedAtAction("GetLocation", new { id = location.LocationID }, location);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLocation(int id)
         {
-            var locations = _context.locationss.SingleOrDefault(LC => LC.LocationID == LocationID);
-            if (locations != null)
-            {
-                locations.Name = model.Name;
-                locations.Summary = model.Summary;
-                locations.Content = model.Content;
-                locations.PathImage = model.PathImage;
-                locations.Longtitude = model.Longtitude;
-                locations.Latitude = model.Latitude;
-                locations.LocationLikedID = model.LocationLikedID;
-                return NoContent();
-            }
-            else
+            if (_context.Locationss == null)
             {
                 return NotFound();
             }
-        }
-        [HttpDelete("{LocationID}")]
-        public async Task<IActionResult> DeleteLocationID(int LocationID)
-        {
-            var locations = await _context.locationss.FindAsync(LocationID);
-            if (locations != null)
-            {
-                _context.locationss.Remove(locations);
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            else
+            var location = await _context.Locationss.FindAsync(id);
+            if (location == null)
             {
                 return NotFound();
             }
+
+            _context.Locationss.Remove(location);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
+        private bool LocationExists(int id)
+        {
+            throw new NotImplementedException();
+        }     
     }
 }

@@ -8,7 +8,7 @@ namespace Festival_Hue_Tiecket.Modelsss
 {
     public class TypesProgramModels
     {
-        [Required]
+        
         public string Name { get; set; }
     }
 }

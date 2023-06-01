@@ -11,14 +11,13 @@ namespace Festival_Hue_Tiecket.Data
     {
         [Key]
         public int LocationID { get; set; }
-        [Required]
         public string Name { get; set; }
         public string Summary { get; set; }
         public string Content { get; set; }
         public string PathImage { get; set; }
         public string Longtitude { get; set; }
         public string Latitude { get; set; }
-        public int LocationLikedID { get; set; }
-        
+        public virtual ICollection<LocationLiked> LocationLikeds { get; set; }
+
     }
 }

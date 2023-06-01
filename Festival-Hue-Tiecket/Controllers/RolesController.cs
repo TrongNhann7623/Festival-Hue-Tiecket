@@ -2,6 +2,7 @@
 using Festival_Hue_Tiecket.Modelsss;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,81 +15,111 @@ namespace Festival_Hue_Tiecket.Controllers
     public class RolesController : ControllerBase
     {
         private readonly MyDbContext _context;
+
         public RolesController(MyDbContext context)
         {
             _context = context;
         }
+
+        // GET: api/Roles
+
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<ActionResult<IEnumerable<RolesModels>>> GetRoles()
         {
-            var role = _context.roles.ToList();
-            return Ok(role);
+            if (_context.Roles == null)
+            {
+                return NotFound();
+            }
+            return await _context.Roles.ToListAsync();
         }
-        [HttpGet("{RolesID}")]
-        public IActionResult GetByID(string RolesID)
+
+        // GET: api/Roles/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<RolesModels>> GetRoles(int id)
         {
+            if (_context.Roles == null)
+            {
+                return NotFound();
+            }
+            var roles = await _context.Roles.FindAsync(id);
+
+            if (roles == null)
+            {
+                return NotFound();
+            }
+
+            return roles;
+        }
+
+        // PUT: api/Roles/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutRoles(int id, RolesModels roles)
+        {
+            if (id != roles.RolesID)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(roles).State = EntityState.Modified;
+
             try
             {
-                var role = _context.roles.SingleOrDefault(RL => RL.RolesID == int.Parse(RolesID));
-                if (role == null)
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RolesExists(id))
                 {
                     return NotFound();
                 }
-                return Ok(role);
-            }
-            catch
-            {
-                return BadRequest();
-            }
-        }
-        [HttpPost]
-        public IActionResult CreateNew(RolesModels model)
-        {
-            try
-            {
-                var role = new Roles
+                else
                 {
-                    Name = model.Name,
-                    
-                };
-                _context.Add(role);
-                _context.SaveChanges();
-                return Ok();
+                    throw;
+                }
             }
-            catch
-            {
-                return BadRequest();
-            }
+
+            return NoContent();
         }
 
-        [HttpPut("{RolesID}")]
-        public IActionResult UpdateRolesByID(int RolesID, RolesModels model)
+        // POST: api/Roles
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<RolesModels>> PostRoles(RolesModels roles)
         {
-            var role = _context.roles.SingleOrDefault(RL => RL.RolesID== RolesID);
-            if (role != null)
+            if (_context.Roles == null)
             {
-                role.Name = model.Name;
-                return NoContent();
+                return Problem("Entity set 'DataContext.Roles'  is null.");
             }
-            else
-            {
-                return NotFound();
-            }
+            _context.Roles.Add(roles);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetRoles", new { id = roles.RolesID }, roles);
         }
-        [HttpDelete("{RolesID}")]
-        public async Task<IActionResult> DeleteRolesByID(int ID)
+
+        // DELETE: api/Roles/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteRoles(int id)
         {
-            var role = await _context.roles.FindAsync(ID);
-            if (role != null)
-            {
-                _context.roles.Remove(role);
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            else
+            if (_context.Roles == null)
             {
                 return NotFound();
             }
+            var roles = await _context.Roles.FindAsync(id);
+            if (roles == null)
+            {
+                return NotFound();
+            }
+
+            _context.Roles.Remove(roles);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool RolesExists(int id)
+        {
+            return (_context.Roles?.Any(e => e.RolesID == id)).GetValueOrDefault();
         }
     }
 }

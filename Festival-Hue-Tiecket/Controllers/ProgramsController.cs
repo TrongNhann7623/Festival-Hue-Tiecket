@@ -21,7 +21,7 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var program = _context.programs.ToList();
+            var program = _context.Programs.ToList();
             return Ok(program);
         }
         [HttpGet("{ProgramID}")]
@@ -29,7 +29,7 @@ namespace Festival_Hue_Tiecket.Controllers
         {
             try
             {
-                var programs = _context.programs.SingleOrDefault(PG => PG.ProgramID == int.Parse(ProgramID));
+                var programs = _context.Programs.SingleOrDefault(PG => PG.ProgramID == int.Parse(ProgramID));
                 if (programs == null)
                 {
                     return NotFound();
@@ -72,7 +72,7 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpPut("{ProgramID}")]
         public IActionResult UpdateProgrambyID(int ProgramID, ProgramsModels model)
         {
-            var program = _context.programs.SingleOrDefault(PG => PG.ProgramID == ProgramID);
+            var program = _context.Programs.SingleOrDefault(PG => PG.ProgramID == ProgramID);
             if (program != null)
             {
                 program.LocationID = model.LocationID;
@@ -95,10 +95,10 @@ namespace Festival_Hue_Tiecket.Controllers
         [HttpDelete("{ProgramID}")]
         public async Task<IActionResult> DeleteProgramID(int ProgramID)
         {
-            var program = await _context.programs.FindAsync(ProgramID);
+            var program = await _context.Programs.FindAsync(ProgramID);
             if (program != null)
             {
-                _context.programs.Remove(program);
+                _context.Programs.Remove(program);
                 await _context.SaveChangesAsync();
                 return NoContent();
             }

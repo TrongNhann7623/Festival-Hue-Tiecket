@@ -9,8 +9,7 @@ namespace Festival_Hue_Tiecket.Data
     public class TypeProgram
     {
         [Key]
-        public int TypeProgramID { get; set; }
-        [Required]
+        public int TypeProgramID { get; set; }       
         public string Name { get; set; }
     }
 }
